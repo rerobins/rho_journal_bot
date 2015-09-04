@@ -1,6 +1,7 @@
 """
 Command that will allow for the creation of arbitrary events in the database.
 """
+from rhobot.components.rdf_publish import RDFSourceStanza
 from rhobot.components.commands.base_command import BaseCommand
 from rhobot.components.storage import StoragePayload
 import logging
@@ -50,7 +51,14 @@ class CreateEventCommand(BaseCommand):
 
             options = options[:10]
 
-            form.add_field(var='locations', label='Location', ftype='list-single', options=options)
+            location_field = form.add_field(var='locations', label='Location', ftype='list-single', options=options)
+
+            for source in results.sources:
+                source_stanza = RDFSourceStanza()
+                source_stanza['name'] = source[0]
+                source_stanza['command'] = source[1]
+
+                location_field.append(source_stanza)
 
             return initial_session
 
