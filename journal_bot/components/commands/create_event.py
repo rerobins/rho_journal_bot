@@ -42,23 +42,24 @@ class CreateEventCommand(BaseCommand):
         def handle_results_from_search(results):
             options = []
 
-            results.results.sort(cmp=lambda x, y: cmp(x.flags.get('http://degree', [0])[0],
-                                                      y.flags.get('http://degree', [0])[0]),
+            results.results.sort(cmp=lambda x, y: cmp(x.get_column('http://degree')[0],
+                                                      y.get_column('http://degree')[0]),
                                  reverse=True)
 
             for result in results.results:
-                options.append({'value': result.about, 'label': result.flags.get(str(SCHEMA.name), ['Unnamed'])[0]})
+                options.append({'value': result.about, 'label': result.get_column(str(SCHEMA.name))[0]})
 
             options = options[:10]
 
             location_field = form.add_field(var='locations', label='Location', ftype='list-single', options=options)
 
-            for source in results.sources:
-                source_stanza = RDFSourceStanza()
-                source_stanza['name'] = source[0]
-                source_stanza['command'] = source[1]
+            if hasattr(results, 'sources'):
+                for source in results.sources:
+                    source_stanza = RDFSourceStanza()
+                    source_stanza['name'] = source[0]
+                    source_stanza['command'] = source[1]
 
-                location_field.append(source_stanza)
+                    location_field.append(source_stanza)
 
             return initial_session
 
