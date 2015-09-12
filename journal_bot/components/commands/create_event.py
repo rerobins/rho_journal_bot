@@ -4,6 +4,7 @@ Command that will allow for the creation of arbitrary events in the database.
 from rhobot.components.rdf_publish import RDFSourceStanza
 from rhobot.components.commands.base_command import BaseCommand
 from rhobot.components.storage import StoragePayload
+from rhobot.namespace import GRAPH
 import logging
 from rdflib.namespace import Namespace
 
@@ -16,10 +17,14 @@ class CreateEventCommand(BaseCommand):
 
     def initialize_command(self):
         super(CreateEventCommand, self).initialize_command()
-
-        logger.info('Initialize Command')
         self._initialize_command(identifier='create_event', name='Create Event',
                                  additional_dependencies={'rho_bot_rdf_publish', 'rho_bot_storage_client', })
+
+    def post_init(self):
+        super(CreateEventCommand, self).post_init()
+
+        self._rdf_publish = self.xmpp['rho_bot_rdf_publish']
+        self._storage_client = self.xmpp['rho_bot_storage_client']
 
     def command_start(self, request, initial_session):
         """
@@ -28,7 +33,7 @@ class CreateEventCommand(BaseCommand):
         :param initial_session:
         :return:
         """
-        form = self.xmpp['xep_0004'].make_form()
+        form = self._forms.make_form()
 
         form.add_field(var='title', label='Title', ftype='text-single')
         form.add_field(var='description', label='Description', ftype='text-multi')
@@ -42,8 +47,8 @@ class CreateEventCommand(BaseCommand):
         def handle_results_from_search(results):
             options = []
 
-            results.results.sort(cmp=lambda x, y: cmp(x.get_column('http://degree')[0],
-                                                      y.get_column('http://degree')[0]),
+            results.results.sort(cmp=lambda x, y: cmp(x.get_column(str(GRAPH.degree))[0],
+                                                      y.get_column(str(GRAPH.degree))[0]),
                                  reverse=True)
 
             for result in results.results:
@@ -66,7 +71,7 @@ class CreateEventCommand(BaseCommand):
         payload = StoragePayload()
         payload.add_type(WGS_84.SpatialThing)
 
-        return self.xmpp['rho_bot_rdf_publish'].send_out_search(payload, timeout=2.0).then(handle_results_from_search)
+        return self._rdf_publish.send_out_search(payload, timeout=2.0).then(handle_results_from_search)
 
     def store_results(self, payload, session):
 
