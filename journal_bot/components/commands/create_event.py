@@ -12,12 +12,11 @@ logger = logging.getLogger(__name__)
 
 class CreateEventCommand(BaseCommand):
 
-    def initialize_command(self):
-        super(CreateEventCommand, self).initialize_command()
-        self._initialize_command(identifier='create_event', name='Create Event',
-                                 additional_dependencies={'rho_bot_rdf_publish', 'rho_bot_storage_client',
-                                                          'rho_bot_get_or_lookup', 'rho_bot_scheduler',
-                                                          'rho_bot_representation_manager', })
+    name = 'create_event'
+    description = 'Create Event'
+    dependencies = BaseCommand.default_dependencies.union({'rho_bot_rdf_publish', 'rho_bot_storage_client',
+                                                           'rho_bot_get_or_lookup', 'rho_bot_scheduler',
+                                                           'rho_bot_representation_manager', })
 
     def post_init(self):
         super(CreateEventCommand, self).post_init()
