@@ -9,8 +9,6 @@ parser.add_option('-c', dest="filename", help="Configuration file for the bot", 
 configuration.load_file(options.filename)
 
 bot = RhoBot()
-bot.register_plugin('rho_bot_storage_client', module='rhobot.components')
-bot.register_plugin('rho_bot_rdf_publish', module='rhobot.components')
 bot.register_plugin('create_event', module='journal_bot.components.commands')
 
 
