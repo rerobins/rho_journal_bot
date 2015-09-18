@@ -10,6 +10,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class CreateEventCommand(BaseCommand):
 
     name = 'create_event'
@@ -177,7 +178,7 @@ class CreateEventCommand(BaseCommand):
 
     def _create_event(self, session, form_payload):
         """
-        Conver the form payload into a storage payload for creating a new event.
+        Convert the form payload into a storage payload for creating a new event.
         :param session:
         :param form_payload:
         :return:
