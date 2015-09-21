@@ -1,0 +1,7 @@
+[connection]
+jid = journal_bot@labware/journal
+password = pass
+
+[muc]
+room = rhobot@conference.labware
+room_nick = journal_bot

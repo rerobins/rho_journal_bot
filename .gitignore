@@ -106,5 +106,5 @@ docs/_build/
 # PyBuilder
 target/
 
-/*.rho
+/configuration
 /*.output
